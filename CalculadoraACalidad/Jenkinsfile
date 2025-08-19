@@ -6,25 +6,35 @@ pipeline {
     maven 'maven3'
   }
 
+  options {
+    // evita el checkout automático duplicado del declarative
+    skipDefaultCheckout(true)
+  }
+
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main',
-            url: 'https://github.com/AnllyAnalyCastilloVilleda/ExamenAseguramientoCalidad.git'
+        // usa la config de SCM del job (ya apunta a tu repo)
+        checkout scm
       }
     }
 
     stage('Build & Test') {
       steps {
-        bat 'mvn -B -DskipTests=false test'
+        dir('CalculadoraACalidad') {
+          bat 'mvn -B -DskipTests=false test'
+        }
       }
     }
   }
 
   post {
     always {
-      junit '**/target/surefire-reports/*.xml'
-      archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true, allowEmptyArchive: true
+      junit 'CalculadoraACalidad/target/surefire-reports/*.xml'
+      archiveArtifacts artifacts: 'CalculadoraACalidad/target/*.jar',
+                        allowEmptyArchive: true,
+                        fingerprint: true
     }
   }
 }
+
