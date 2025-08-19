@@ -29,13 +29,12 @@ public class CalculadoraACalidad {
     }
 
     public double dividir(int a, int b) {
-        if (b == 0) {
-            throw new ArithmeticException("No se puede dividir entre cero");
-        }
-        double resultado = (double) a * b; // <-- BUG: debería ser a / b
-        historial.add(resultado);
-        return resultado;
+    if (b == 0) throw new ArithmeticException("No se puede dividir entre cero");
+    double resultado = (double) a / b;   // <-- FIX
+    historial.add(resultado);
+    return resultado;
     }
+ 
 
     public double promedioHistorial() {
         if (historial.isEmpty()) return 0;
